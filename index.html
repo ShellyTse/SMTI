@@ -6,141 +6,565 @@
 <title>SMTI · 你在感情里是哪种生物</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap');
+
 :root{
-  --bg:#f5f2ed;--surface:#ffffff;--surface2:#f9f7f4;
-  --border:#e2ddd6;--border2:#d4cec5;
-  --text:#1a1714;--text-muted:#7a7068;--text-dim:#b0a89e;
-  --accent-s:#c8922a;--accent-m:#4a8fc2;
-  --accent-s-light:rgba(200,146,42,0.1);--accent-m-light:rgba(74,143,194,0.1);
-  --accent-s-mid:rgba(200,146,42,0.25);
-  --radius:20px;--radius-sm:12px;
-  --shadow:0 2px 16px rgba(0,0,0,0.06);--shadow-md:0 4px 32px rgba(0,0,0,0.1);
+  --bg:#f4f1ea;
+  --paper:#fffef9;
+  --surface:#fffef9;
+  --border:#c8c0a8;
+  --border2:#a09880;
+  --text:#1a1510;
+  --text-muted:#5a5040;
+  --text-dim:#9a9080;
+  --accent-s:#8b1a1a;
+  --accent-m:#1a3a8b;
+  --accent-s-light:rgba(139,26,26,0.08);
+  --accent-m-light:rgba(26,58,139,0.08);
+  --accent-s-mid:rgba(139,26,26,0.2);
+  --stamp-red:rgba(180,20,20,0.75);
+  --stamp-blue:rgba(20,60,160,0.75);
+  --radius:4px;
+  --radius-sm:2px;
+  --shadow:0 1px 4px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-md:0 2px 12px rgba(0,0,0,0.12);
 }
+
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;overflow-x:hidden;}
+body{
+  background:var(--bg);
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(180,160,120,0.12) 27px,rgba(180,160,120,0.12) 28px);
+  color:var(--text);
+  font-family:'Noto Serif SC',serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
 .screen{display:none;min-height:100vh;}
 .screen.active{display:flex;flex-direction:column;}
 
-/* INTRO */
+/* ── INTRO ── */
 #intro{align-items:center;justify-content:center;padding:48px 24px;position:relative;}
-.intro-deco{position:absolute;top:0;left:0;right:0;height:320px;background:linear-gradient(160deg,rgba(200,146,42,0.08) 0%,rgba(74,143,194,0.08) 100%);border-radius:0 0 60% 60%/0 0 40px 40px;}
-.intro-content{position:relative;max-width:480px;width:100%;text-align:center;}
-.badge{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.25em;color:var(--text-muted);border:1.5px solid var(--border2);padding:6px 18px;border-radius:100px;margin-bottom:32px;text-transform:uppercase;background:var(--surface);}
-.intro-title{font-size:clamp(64px,18vw,100px);font-weight:900;letter-spacing:-.03em;line-height:.88;margin-bottom:6px;}
-.title-s{color:var(--accent-s);}.title-m{color:var(--accent-m);}.title-ti{color:var(--text);opacity:.15;}
-.intro-tagline{font-size:13px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:40px;font-family:'Space Mono',monospace;}
-.intro-card{background:var(--surface);border-radius:var(--radius);padding:28px;margin-bottom:24px;text-align:left;box-shadow:var(--shadow);border:1px solid var(--border);}
-.intro-card p{font-size:15px;line-height:2;color:var(--text-muted);}
-.intro-card strong{color:var(--text);}
-.stats-row{display:flex;gap:1px;background:var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:28px;box-shadow:var(--shadow);}
-.stat{flex:1;background:var(--surface);padding:18px 8px;text-align:center;}
-.stat-num{font-family:'Space Mono',monospace;font-size:24px;color:var(--text);display:block;font-weight:700;}
-.stat-label{font-size:11px;color:var(--text-dim);margin-top:4px;display:block;}
-.btn-start{width:100%;padding:20px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .25s;letter-spacing:.04em;box-shadow:var(--shadow-md);}
-.btn-start:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.18);}
-.disclaimer{margin-top:16px;font-size:11px;color:var(--text-dim);font-family:'Space Mono',monospace;}
 
-/* QUIZ - SCROLL MODE */
+.intro-content{
+  position:relative;max-width:520px;width:100%;
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:40px 36px;
+  box-shadow:var(--shadow-md),4px 4px 0 rgba(0,0,0,0.06);
+}
+
+/* 打孔效果 */
+.intro-content::before{
+  content:'';
+  position:absolute;
+  top:20px;left:-12px;
+  width:24px;height:24px;
+  background:var(--bg);
+  border-radius:50%;
+  border:1.5px solid var(--border);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.15);
+}
+.intro-content::after{
+  content:'';
+  position:absolute;
+  bottom:20px;left:-12px;
+  width:24px;height:24px;
+  background:var(--bg);
+  border-radius:50%;
+  border:1.5px solid var(--border);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.doc-header{
+  text-align:center;
+  border-bottom:2px solid var(--text);
+  padding-bottom:16px;
+  margin-bottom:24px;
+}
+
+.doc-title-en{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.3em;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+.intro-title{
+  font-size:clamp(36px,10vw,56px);
+  font-weight:900;
+  letter-spacing:-.01em;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+
+.title-s{color:var(--accent-s);}
+.title-m{color:var(--accent-m);}
+
+.intro-tagline{
+  font-size:13px;
+  color:var(--text-muted);
+  font-style:italic;
+  margin-bottom:0;
+}
+
+.doc-field{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.doc-field-label{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--text-dim);
+  letter-spacing:.1em;
+  white-space:nowrap;
+  min-width:60px;
+}
+.doc-field-value{
+  font-size:14px;
+  color:var(--text);
+  line-height:1.6;
+}
+.doc-field-value strong{font-weight:700;}
+
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin:20px 0;
+}
+.stat{
+  background:var(--paper);
+  padding:12px 6px;
+  text-align:center;
+}
+.stat-num{
+  font-family:'Space Mono',monospace;
+  font-size:20px;
+  color:var(--text);
+  display:block;
+  font-weight:700;
+}
+.stat-label{font-size:10px;color:var(--text-dim);margin-top:2px;display:block;}
+
+.btn-start{
+  width:100%;
+  padding:16px;
+  background:var(--text);
+  color:var(--paper);
+  border:none;
+  border-radius:var(--radius);
+  font-family:'Noto Serif SC',serif;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.06em;
+  margin-top:8px;
+}
+.btn-start:hover{opacity:.85;transform:translateY(-1px);}
+
+.disclaimer{
+  margin-top:12px;
+  font-size:10px;
+  color:var(--text-dim);
+  font-family:'Space Mono',monospace;
+  text-align:center;
+}
+
+/* ── QUIZ ── */
 #quiz{padding:0;}
-.quiz-top-bar{padding:20px 24px 16px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border);}
-.progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.quiz-top-bar{
+  padding:14px 24px 12px;
+  position:sticky;top:0;
+  background:var(--bg);
+  z-index:10;
+  border-bottom:2px solid var(--text);
+}
+.progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .progress-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.08em;}
-.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-s),var(--accent-m));border-radius:2px;transition:width .45s cubic-bezier(.4,0,.2,1);}
-.quiz-scroll-body{padding:32px 24px 16px;max-width:600px;margin:0 auto;width:100%;}
-.q-block{margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid var(--border);}
+.progress-bar{height:3px;background:var(--border);overflow:hidden;}
+.progress-fill{
+  height:100%;
+  background:var(--text);
+  transition:width .45s ease;
+}
+
+.quiz-scroll-body{padding:28px 24px 16px;max-width:620px;margin:0 auto;width:100%;}
+
+.q-block{
+  margin-bottom:36px;
+  padding-bottom:36px;
+  border-bottom:1px dashed var(--border2);
+}
 .q-block:last-of-type{border-bottom:none;}
+.q-block.unanswered{
+  background:rgba(139,26,26,0.03);
+  border-radius:var(--radius);
+  padding:12px 16px;
+  margin-left:-16px;margin-right:-16px;
+  border-bottom:1px dashed var(--accent-s);
+}
 .q-block.unanswered .q-num{color:var(--accent-s);}
-.q-block.unanswered{background:rgba(200,146,42,0.03);border-radius:var(--radius-sm);padding:16px;margin-left:-16px;margin-right:-16px;}
-.q-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.25em;margin-bottom:14px;text-transform:uppercase;}
-.q-text{font-size:clamp(15px,3.5vw,18px);line-height:1.85;color:var(--text);margin-bottom:24px;}
-.options{display:flex;flex-direction:column;gap:10px;}
-.option{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;text-align:left;font-family:'Noto Serif SC',serif;color:var(--text-muted);font-size:14px;line-height:1.65;width:100%;box-shadow:var(--shadow);}
-.option:hover{border-color:var(--border2);color:var(--text);transform:translateX(4px);}
-.option.selected{border-color:var(--accent-s);background:var(--accent-s-light);color:var(--text);}
-.option.selected .opt-letter{color:var(--accent-s);}
-.opt-letter{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);min-width:16px;margin-top:2px;letter-spacing:.1em;}
-.submit-zone{max-width:600px;margin:0 auto;width:100%;padding:8px 24px 60px;}
-.submit-hint{font-size:12px;color:var(--accent-s);font-family:'Space Mono',monospace;text-align:center;margin-bottom:12px;min-height:20px;letter-spacing:.05em;}
-.btn-submit{width:100%;padding:20px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-md);}
-.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 48px rgba(0,0,0,.18);}
-.btn-submit:disabled{background:var(--border2);color:var(--text-dim);cursor:not-allowed;box-shadow:none;}
 
-/* LOADING */
-#loading{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;gap:28px;background:var(--bg);}
+.q-num{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--text-dim);
+  letter-spacing:.25em;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+.q-text{
+  font-size:clamp(15px,3.5vw,17px);
+  line-height:1.9;
+  color:var(--text);
+  margin-bottom:20px;
+}
+
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  cursor:pointer;transition:all .15s;
+  text-align:left;
+  font-family:'Noto Serif SC',serif;
+  color:var(--text-muted);
+  font-size:14px;line-height:1.65;width:100%;
+  box-shadow:1px 1px 0 rgba(0,0,0,0.06);
+}
+.option:hover{border-color:var(--border2);color:var(--text);background:#fffdf5;}
+.option.selected{
+  border-color:var(--accent-s);
+  background:var(--accent-s-light);
+  color:var(--text);
+}
+.option.selected .opt-letter{color:var(--accent-s);font-weight:700;}
+.opt-letter{
+  font-family:'Space Mono',monospace;
+  font-size:10px;color:var(--text-dim);
+  min-width:16px;margin-top:2px;
+}
+
+.submit-zone{max-width:620px;margin:0 auto;width:100%;padding:8px 24px 60px;}
+.submit-hint{
+  font-size:11px;color:var(--accent-s);
+  font-family:'Space Mono',monospace;
+  text-align:center;margin-bottom:10px;min-height:18px;
+}
+.btn-submit{
+  width:100%;padding:16px;
+  background:var(--text);color:var(--paper);
+  border:none;border-radius:var(--radius);
+  font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+}
+.btn-submit:hover:not(:disabled){opacity:.85;transform:translateY(-1px);}
+.btn-submit:disabled{background:var(--border);color:var(--text-dim);cursor:not-allowed;}
+
+/* ── LOADING ── */
+#loading{
+  min-height:100vh;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:24px;
+  background:var(--bg);
+}
 #loading.active{display:flex;}
-.loading-emoji{font-size:52px;animation:pulse 1.4s ease infinite;}
-.loading-text{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;color:var(--text-muted);text-transform:uppercase;}
-.loading-bar{width:180px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.loading-fill{height:100%;background:linear-gradient(90deg,var(--accent-s),var(--accent-m));animation:loadAnim 2s ease forwards;}
+.loading-emoji{font-size:48px;animation:pulse 1.4s ease infinite;}
+.loading-text{
+  font-family:'Space Mono',monospace;font-size:11px;
+  letter-spacing:.18em;color:var(--text-muted);text-transform:uppercase;
+}
+.loading-bar{width:160px;height:2px;background:var(--border);overflow:hidden;}
+.loading-fill{height:100%;background:var(--text);animation:loadAnim 2s ease forwards;}
 
-/* RESULT */
+/* ── RESULT - 诊断书风格 ── */
 #result{padding:32px 24px 80px;align-items:center;background:var(--bg);}
-.result-inner{max-width:520px;width:100%;}
-.result-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.25em;color:var(--text-dim);text-transform:uppercase;margin-bottom:20px;text-align:center;}
-.result-hero{background:var(--surface);border-radius:28px;padding:40px 32px 32px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--border);text-align:center;}
-.hero-gradient{position:absolute;top:0;left:0;right:0;height:200px;background:linear-gradient(160deg,var(--accent-s-light),var(--accent-m-light));border-radius:28px 28px 0 0;}
-.hero-top-bar{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent-s),var(--accent-m));border-radius:28px 28px 0 0;}
-.hidden-badge{display:inline-block;background:linear-gradient(135deg,#fff8e8,#e8f4ff);border:1px solid var(--accent-s-mid);border-radius:100px;padding:5px 16px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--accent-s);margin-bottom:16px;position:relative;}
-.char-illus{position:relative;width:160px;height:160px;margin:0 auto 24px;animation:floatUp 3s ease-in-out infinite;}
-.char-illus svg{width:100%;height:100%;filter:drop-shadow(0 8px 24px rgba(0,0,0,.12));}
-.result-camp-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;padding:5px 14px;border-radius:100px;margin-bottom:14px;position:relative;}
-.camp-s{background:var(--accent-s-light);color:var(--accent-s);}
-.camp-m{background:var(--accent-m-light);color:var(--accent-m);}
-.camp-hidden{background:var(--surface2);color:var(--text-muted);}
-.result-name{font-size:clamp(30px,8vw,44px);font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-bottom:6px;position:relative;}
-.result-name-zh{font-size:15px;color:var(--text-muted);margin-bottom:4px;position:relative;}
-.result-name-en{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.12em;margin-bottom:28px;position:relative;}
-.result-divider{height:1px;background:var(--border);margin:24px 0;}
-.result-desc{font-size:14px;line-height:2.1;color:var(--text-muted);white-space:pre-line;text-align:left;}
-.dims-card{background:var(--surface);border-radius:24px;padding:28px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.section-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--text-dim);text-transform:uppercase;margin-bottom:24px;text-align:center;}
-.dims-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.dim-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
-.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.dim-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.08em;}
-.dim-val{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-dim);}
-.dim-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:10px;overflow:hidden;}
-.dim-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent-s),var(--accent-m));transition:width 1.2s cubic-bezier(.4,0,.2,1) .2s;}
-.dim-desc{font-size:11px;color:var(--text-muted);line-height:1.6;}
-.share-card{background:var(--surface);border-radius:24px;padding:28px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);}
-.share-text{font-size:15px;color:var(--text-muted);line-height:1.9;margin-bottom:20px;}
+.result-inner{max-width:540px;width:100%;}
+
+/* 诊断书主卡片 */
+.result-hero{
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:0;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-md),4px 4px 0 rgba(0,0,0,0.08);
+}
+
+/* 顶部档案条 */
+.result-hero-header{
+  background:var(--text);
+  color:var(--paper);
+  padding:12px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.result-doc-title{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  opacity:.8;
+}
+.result-doc-no{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  opacity:.6;
+}
+
+.result-hero-body{padding:28px 28px 32px;}
+
+/* 图章效果 */
+.stamp-wrap{
+  position:absolute;
+  top:60px;right:24px;
+  transform:rotate(12deg);
+  opacity:.85;
+}
+.stamp{
+  border:3px solid var(--stamp-red);
+  border-radius:4px;
+  padding:6px 12px;
+  text-align:center;
+  color:var(--stamp-red);
+}
+.stamp-text{
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.15em;
+  display:block;
+  line-height:1.4;
+}
+.stamp-text-big{
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:.05em;
+  display:block;
+}
+
+/* hidden类型用蓝色图章 */
+.stamp.stamp-hidden{
+  border-color:var(--stamp-blue);
+  color:var(--stamp-blue);
+}
+
+/* 角色图 */
+.char-illus{
+  width:140px;height:140px;
+  margin:0 0 20px 0;
+  border-radius:8px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:var(--bg);
+}
+.char-illus img{width:100%;height:100%;object-fit:cover;}
+.char-illus svg{width:100%;height:100%;}
+
+/* 档案字段 */
+.result-fields{margin-bottom:20px;}
+.result-field{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid var(--border);
+}
+.result-field:last-child{border-bottom:none;}
+.result-field-label{
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--text-dim);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  min-width:52px;
+  white-space:nowrap;
+}
+.result-field-value{font-size:14px;color:var(--text);line-height:1.5;}
+.result-name-big{
+  font-size:clamp(26px,7vw,38px);
+  font-weight:900;
+  letter-spacing:-.01em;
+  line-height:1;
+}
+.result-camp-tag{
+  display:inline-block;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.15em;
+  padding:3px 10px;
+  border-radius:2px;
+}
+.camp-s{background:var(--accent-s-light);color:var(--accent-s);border:1px solid rgba(139,26,26,0.2);}
+.camp-m{background:var(--accent-m-light);color:var(--accent-m);border:1px solid rgba(26,58,139,0.2);}
+.camp-hidden{background:#f0ede8;color:var(--text-muted);border:1px solid var(--border);}
+
+/* 诊断正文 */
+.result-divider{
+  height:1px;
+  background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 6px,transparent 6px,transparent 10px);
+  margin:20px 0;
+}
+.result-desc-label{
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--text-dim);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.result-desc{
+  font-size:14px;line-height:2.1;
+  color:var(--text-muted);
+  white-space:pre-line;
+  padding-left:12px;
+  border-left:2px solid var(--border);
+}
+
+/* 维度卡片 */
+.dims-card{
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow),4px 4px 0 rgba(0,0,0,0.05);
+}
+.section-title{
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.22em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-bottom:20px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.dims-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dim-item{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px 14px;
+}
+.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.dim-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:.06em;}
+.dim-val{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);}
+.dim-bar{height:3px;background:var(--border);border-radius:1px;margin-bottom:8px;overflow:hidden;}
+.dim-fill{
+  height:100%;background:var(--text);
+  transition:width 1.2s cubic-bezier(.4,0,.2,1) .2s;
+}
+.dim-desc{font-size:11px;color:var(--text-muted);line-height:1.5;}
+
+/* 分享卡片 */
+.share-card{
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;margin-bottom:12px;
+  text-align:center;
+  box-shadow:var(--shadow),4px 4px 0 rgba(0,0,0,0.05);
+}
+.share-text{font-size:14px;color:var(--text-muted);line-height:1.9;margin-bottom:16px;}
 .share-text em{color:var(--accent-s);font-style:normal;font-weight:700;}
-.share-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.btn-share{padding:10px 20px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:100px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--text-muted);cursor:pointer;transition:all .2s;}
-.btn-share:hover{border-color:var(--text-muted);color:var(--text);}
-.btn-retry{width:100%;padding:16px;background:transparent;border:1.5px solid var(--border2);border-radius:var(--radius);font-family:'Noto Serif SC',serif;font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+.share-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.btn-share{
+  padding:8px 18px;
+  background:var(--bg);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:.08em;color:var(--text-muted);
+  cursor:pointer;transition:all .15s;
+}
+.btn-share:hover{border-color:var(--text);color:var(--text);}
+
+.btn-retry{
+  width:100%;padding:14px;
+  background:transparent;
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  font-family:'Noto Serif SC',serif;font-size:14px;
+  color:var(--text-muted);cursor:pointer;transition:all .15s;
+}
 .btn-retry:hover{border-color:var(--text);color:var(--text);}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:var(--bg);padding:10px 22px;border-radius:100px;font-family:'Space Mono',monospace;font-size:11px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999;}
+
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(12px);
+  background:var(--text);color:var(--paper);
+  padding:8px 20px;border-radius:2px;
+  font-family:'Space Mono',monospace;font-size:11px;
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999;
+}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes loadAnim{from{width:0}to{width:100%}}
-@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.fade-up{animation:fadeUp .6s ease forwards;}
-@media(max-width:480px){.dims-grid{grid-template-columns:1fr}.result-hero{padding:32px 20px 28px}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.fade-up{animation:fadeUp .5s ease forwards;}
+
+@media(max-width:480px){
+  .dims-grid{grid-template-columns:1fr}
+  .result-hero-body{padding:20px 16px 24px}
+  .intro-content{padding:28px 20px}
+}
 </style>
 </head>
 <body>
 
 <!-- INTRO -->
 <div class="screen active" id="intro">
-  <div class="intro-deco"></div>
   <div class="intro-content fade-up">
-    <div class="badge">S · M · T · I</div>
-    <div class="intro-title"><span class="title-s">S</span><span class="title-m">M</span><span class="title-ti">TI</span></div>
-    <div class="intro-tagline" style="margin-top:10px">你在感情里是哪种生物</div>
-    <div class="intro-card">
-      <p>不是星座，不是血型，不是MBTI。<br><br>
-      <strong>14个问题</strong>，6个维度，测出你在关系里真实的运作方式。<br><br>
-      结果可能让你觉得被看穿——也可能让你第一次看清自己。</p>
+    <div class="doc-header">
+      <div class="doc-title-en">SMTI · PERSONALITY DIAGNOSTIC REPORT</div>
+      <div class="intro-title">
+        <span class="title-s">你是S</span><br>
+        <span class="title-m">还是M？</span>
+      </div>
+      <div class="intro-tagline">别想歪，我们说的是感情。</div>
     </div>
+
+    <div class="result-fields" style="margin-bottom:20px">
+      <div class="doc-field">
+        <span class="doc-field-label">测试目的</span>
+        <span class="doc-field-value">14题，6个维度，测出你在关系里<strong>到底是折磨人的那个还是被折磨的那个</strong></span>
+      </div>
+      <div class="doc-field">
+        <span class="doc-field-label">结果类型</span>
+        <span class="doc-field-value">共16种，含4个隐藏类型，精准到你不好意思截图</span>
+      </div>
+      <div class="doc-field">
+        <span class="doc-field-label">免责声明</span>
+        <span class="doc-field-value">仅供娱乐，别拿它当诊断、相亲依据、或分手理由</span>
+      </div>
+    </div>
+
     <div class="stats-row">
       <div class="stat"><span class="stat-num">14</span><span class="stat-label">道题</span></div>
       <div class="stat"><span class="stat-num">6</span><span class="stat-label">个维度</span></div>
       <div class="stat"><span class="stat-num">16</span><span class="stat-label">种结果</span></div>
       <div class="stat"><span class="stat-num">4</span><span class="stat-label">个隐藏</span></div>
     </div>
+
     <button class="btn-start" onclick="startQuiz()">开始测试 →</button>
     <div class="disclaimer">约 3 分钟 · 凭直觉选 · 没有标准答案</div>
   </div>
@@ -172,29 +596,59 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 <!-- RESULT -->
 <div class="screen" id="result">
   <div class="result-inner">
-    <div class="result-eyebrow">你的 SMTI 结果</div>
+
     <div class="result-hero">
-      <div class="hero-gradient"></div>
-      <div class="hero-top-bar"></div>
-      <div class="hidden-badge" id="hidden-badge" style="display:none">✦ 隐藏类型 · 稀有解锁</div>
-      <div class="char-illus" id="char-illus"></div>
-      <div class="result-camp-tag" id="result-camp"></div>
-      <div class="result-name" id="result-name"></div>
-      <div class="result-name-zh" id="result-name-zh"></div>
-      <div class="result-name-en" id="result-name-en"></div>
-      <div class="result-divider"></div>
-      <div class="result-desc" id="result-desc"></div>
+      <div class="result-hero-header">
+        <span class="result-doc-title">SMTI · 感情人格诊断报告</span>
+        <span class="result-doc-no" id="result-doc-no">NO. ——</span>
+      </div>
+      <div class="result-hero-body">
+
+        <div class="stamp-wrap" id="stamp-wrap">
+          <div class="stamp" id="stamp-el">
+            <span class="stamp-text">SMTI</span>
+            <span class="stamp-text-big" id="stamp-type">S型</span>
+            <span class="stamp-text">已确认</span>
+          </div>
+        </div>
+
+        <div class="char-illus" id="char-illus"></div>
+
+        <div class="result-fields">
+          <div class="result-field">
+            <span class="result-field-label">类型</span>
+            <div>
+              <span class="result-camp-tag" id="result-camp"></span>
+            </div>
+          </div>
+          <div class="result-field">
+            <span class="result-field-label">名称</span>
+            <div>
+              <div class="result-name-big" id="result-name"></div>
+              <div style="font-size:13px;color:var(--text-muted);margin-top:4px" id="result-name-zh"></div>
+              <div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-dim);margin-top:2px;letter-spacing:.1em" id="result-name-en"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-divider"></div>
+        <div class="result-desc-label">诊断说明</div>
+        <div class="result-desc" id="result-desc"></div>
+
+      </div>
     </div>
+
     <div class="dims-card">
-      <div class="section-title">你的六维度画像</div>
+      <div class="section-title">六维度分析 · DIMENSIONAL ANALYSIS</div>
       <div class="dims-grid" id="dims-grid"></div>
     </div>
+
     <div class="share-card">
       <div class="section-title">分享给朋友</div>
-      <div class="share-text">我的 SMTI 结果是 <em id="share-name"></em><br>你猜你在感情里是哪种生物？</div>
+      <div class="share-text">我的 SMTI 诊断结果是 <em id="share-name"></em><br>你在感情里是折磨人的还是被折磨的？</div>
       <div class="share-btns">
-        <button class="btn-share" onclick="copyResult()">复制结果文字</button>
-        <button class="btn-share" onclick="copyLink()">复制测试链接</button>
+        <button class="btn-share" onclick="copyResult()">复制结果</button>
+        <button class="btn-share" onclick="copyLink()">复制链接</button>
       </div>
     </div>
     <button class="btn-retry" onclick="resetQuiz()">重新测一次</button>
@@ -204,6 +658,22 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 <div class="toast" id="toast"></div>
 
 <script>
+
+const githubImgs = {
+  santa: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/santa.png',
+  snape: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/snape.png',
+  shrek: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/shrek.png',
+  spongebob: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/spongebob.png',
+  squidward: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/squidward.png',
+  mcdonalds: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/mcdonalds.png',
+  minions: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/minions.png',
+  mixue: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/mixue.png',
+  morty: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/morty.png',
+  malo: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/malo.png',
+  switch: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/switch.png',
+  schrodinger: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/schrodinger.png',
+  muscle: 'https://raw.githubusercontent.com/ShellyTse/SMTI/main/muscle.png'
+};
 const illus={
 starbucks:`<svg viewBox="0 0 160 160" fill="none"><rect x="45" y="72" width="70" height="60" rx="8" fill="#c8922a"/><rect x="49" y="76" width="62" height="52" rx="6" fill="#e8b84b"/><path d="M48 132L52 160L108 160L112 132Z" fill="#c8922a"/><rect x="42" y="88" width="76" height="24" rx="4" fill="#a07020"/><rect x="42" y="62" width="76" height="14" rx="7" fill="#6b4c1e"/><rect x="72" y="64" width="16" height="6" rx="3" fill="#4a3010"/><path d="M68 52Q72 42 68 32" stroke="#c8922a" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M80 48Q84 36 80 24" stroke="#c8922a" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M92 52Q96 42 92 32" stroke="#c8922a" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="80" cy="104" r="16" fill="#6b4c1e"/><circle cx="80" cy="104" r="12" fill="#4a3010"/><text x="80" y="109" text-anchor="middle" fill="#e8b84b" font-size="12" font-weight="bold">S</text><path d="M115 80Q140 80 140 104Q140 128 115 128" stroke="#a07020" stroke-width="8" stroke-linecap="round" fill="none"/></svg>`,
 santa:`<svg viewBox="0 0 160 160" fill="none"><rect x="44" y="90" width="72" height="60" rx="12" fill="#cc2222"/><rect x="44" y="118" width="72" height="12" fill="#1a1a1a"/><rect x="72" y="116" width="16" height="16" rx="2" fill="#c8922a"/><circle cx="80" cy="100" r="3" fill="#aa1111"/><circle cx="80" cy="110" r="3" fill="#aa1111"/><circle cx="80" cy="70" r="28" fill="#f5d5b0"/><path d="M55 60L80 10L105 60Z" fill="#cc2222"/><rect x="50" y="56" width="60" height="10" rx="5" fill="white"/><circle cx="80" cy="12" r="7" fill="white"/><circle cx="70" cy="68" r="4" fill="#1a1a1a"/><circle cx="90" cy="68" r="4" fill="#1a1a1a"/><circle cx="71" cy="67" r="1.5" fill="white"/><circle cx="91" cy="67" r="1.5" fill="white"/><path d="M68 80Q80 90 92 80" stroke="#a06040" stroke-width="2.5" stroke-linecap="round" fill="none"/><ellipse cx="80" cy="88" rx="22" ry="10" fill="white"/><rect x="14" y="92" width="32" height="14" rx="7" fill="#cc2222"/><rect x="114" y="92" width="32" height="14" rx="7" fill="#cc2222"/><circle cx="14" cy="99" r="9" fill="#f5d5b0"/><circle cx="146" cy="99" r="9" fill="#f5d5b0"/></svg>`,
@@ -232,7 +702,7 @@ const chars=[
 {id:'squidward',name:'Squidward',zh:'章鱼哥（我在等世界欣赏我）',en:'SQUIDWARD TENTACLES',camp:'S 阵营',cc:'camp-s',h:false,p:{C:1,A:1,T:3,E:2,W:2,D:1},desc:`你不是孤僻，你只是对「群」有要求。\n不是所有热闹都值得你参与，\n不是所有人都值得你回消息。\n你有自己的审美，自己的品味，自己的音乐。\n周围人不懂，你也不打算解释。\n总有一天世界会欣赏你的——\n你非常坚定地相信这一点，\n已经相信很多年了。`},
 {id:'muji',name:'MUJI',zh:'无印良品',en:'MUJI 無印良品',camp:'M 阵营',cc:'camp-m',h:false,p:{C:4,A:2,T:3,E:1,W:3,D:2},desc:`你是那种会在分手三个月后，\n突然想起对方说过的一句无关紧要的话，\n然后在凌晨两点盯着天花板的人。\n你没有告诉任何人。\n你不觉得这有什么好说的。\n你的需求感不是没有，\n是存在一个很深的地方，\n深到连你自己都要挖一会儿才能找到。\n无印良品的包装上从来不写成分，\n但成分都在。`},
 {id:'mcdonalds',name:"McDonald's",zh:'麦当劳（24小时为你开着）',en:"McDONALD'S",camp:'M 阵营',cc:'camp-m',h:false,p:{C:4,A:4,T:2,E:3,W:3,D:4},desc:`你是那种让人无比安心的存在。\n不管几点，不管什么心情，找你都不会错。\n你24小时营业，风雨无阻，从不让人失望。\n你也知道，\n「随时都在」这件事，\n让你显得不那么珍贵。\n但你还是开着门。\n因为你觉得，\n有人需要你这件事，本身就足够了。`},
-{id:'marco',name:'Marco 马可',zh:'马可波罗（翻山越岭版）',en:'MARCO POLO',camp:'M 阵营',cc:'camp-m',h:false,p:{C:4,A:4,T:2,E:3,W:4,D:5},desc:`你愿意为一个人翻山越岭。\n不是因为他要求你，\n是因为你根本停不下来。\n对方问你累不累，你说不累。\n你是真的不累——\n因为只要在靠近他，\n你就觉得这趟值得。\n你没说的是：\n你从来没想过，\n他有没有在等你到来。`},
+{id:'mixue',name:'Mixue',zh:'蜜雪冰城（甜蜜蜜版）',en:'MIXUE BINGCHENG',camp:'M 阵营',cc:'camp-m',h:false,p:{C:4,A:4,T:2,E:3,W:4,D:5},desc:`你以为你忘了。\n但那首歌一响，\n你又想起他了。\n你爱我，我爱你，蜜雪冰城甜蜜蜜。\n戒不掉的不是奶茶，是这个人。`},
 {id:'minions',name:'Minions',zh:'小黄人（存包小票找不到版）',en:'MINIONS',camp:'M 阵营',cc:'camp-m',h:false,p:{C:5,A:4,T:3,E:4,W:5,D:5},desc:`你天生需要一个可以追随的人。\n不是因为你没主见——\n是因为你的主见就是：跟他走。\n找到之前，你是全世界最散漫的人。\n找到之后，你是全世界最专注的人。\n旁人觉得你傻，\n你觉得旁人不懂——\n爱一个人本来就是把判断力暂时寄存一下。\n问题是你的存包小票，\n一直找不到在哪。`},
 {id:'morty',name:'Morty',zh:'莫蒂（你又犯病了）',en:'MORTY SMITH',camp:'M 阵营',cc:'camp-m',h:false,p:{C:5,A:5,T:4,E:4,W:4,D:5},desc:`你也知道跟着他走不一定对。\n你也知道这段关系有点消耗你。\n你也知道你值得更好的。\n但他一开口，\n你就已经在穿外套了。\n你把这叫做缘分。\n你最好的朋友叫它：你又犯病了。\n你们说的可能是同一件事。`},
 {id:'malo',name:'Malo 吗喽',zh:'吗喽（用香蕉的钱只能请来我）',en:'MALO',camp:'M 阵营',cc:'camp-m',h:false,p:{C:5,A:5,T:5,E:3,W:3,D:5},desc:`生活给了你很多下马威，你照单全收。\n感情给了你很多措手不及，你也照单全收。\n每次以为真的撑不住了，\n结果第二天闹钟一响，\n你还是爬起来了。\n不是因为你坚强——\n是因为你蹲着比站着更难受。\n你不是没有脾气，\n你只是发完了还得继续过日子。\n这件事你已经很熟练了。`},
@@ -265,7 +735,7 @@ const qs=[
 {t:"如果你在感情里的状态是一种天气，你现在是？",o:[{t:"晴天——稳定，没什么波澜，也挺好",s:{T:1,A:1,W:1}},{t:"梅雨季——说不清楚，一直在等什么结束",s:{a:1,t:1,w:1}},{t:"台风前——表面平静，但感觉快来了",s:{C:1,E:1,T:1}},{t:"人工智能控制的恒温室——我不确定我有没有天气",s:{w:1,d:1},h:'ss'}]},
 {t:"你跟一个人在一起半年了。有天你突然发现，你已经不记得不认识他之前是什么感觉了。你对这件事的态度是？",o:[{t:"这挺好的，我喜欢这种感觉",s:{a:1,D:1,T:1}},{t:"有点细思极恐，但又不想想太多",s:{E:1,W:1,d:1}},{t:"没想过这个问题",s:{A:1,w:1,T:1}}]},
 {t:"在感情里，你是那种会先爱上对方的人，还是等对方先爱上你的人？",o:[{t:"我先爱的那个",s:{a:1,D:1,e:1}},{t:"等对方先爱我的那个",s:{C:1,A:1,d:1}},{t:"说不清楚，要看对方",s:{w:1},h:'sw'},{t:"我还没想好这个问题",s:{w:1,a:1},h:'sc'}]},
-{t:"你们在一起之后，你发现对方喜欢你的理由，恰好是你最不在意的那部分自己。",o:[{t:"那也没关系，喜欢就是喜欢",s:{T:1,D:1,a:1}},{t:"有点奇怪，他喜欢的到底是不是真正的我",s:{W:1,d:1,E:1}},{t:"所以有时候我会想，他喜欢的是我吗",s:{w:1,a:1,t:1}}]},
+{t:"如果你消失三天不联系对方，你觉得会发生什么？",o:[{t:"他会先找我",s:{C:1,A:1,W:1}},{t:"我撑不过第一天",s:{a:1,e:1,t:1}},{t:"可能谁都不会先开口",s:{A:1,E:1,d:1}},{t:"我试过，结果不太好",s:{a:1,t:1,w:1},h:'mu'}]},
 {t:"如果对方有一天问你：「你有没有认真喜欢过我？」你回答的时候，会先想什么？",o:[{t:"当然有，脱口而出",s:{e:1,D:1,T:1}},{t:"想了想，还是说「当然有」",s:{W:1,E:1,d:1}},{t:"想起某个具体的瞬间，然后才说有",s:{D:1,W:1,a:1}},{t:"反问他为什么突然问这个",s:{C:1,A:1,d:1}}]}
 ];
 
@@ -380,8 +850,30 @@ function doResult(){
 }
 
 function renderResult(char,sc){
-  document.getElementById('char-illus').innerHTML=illus[char.id]||char.zh;
-  document.getElementById('hidden-badge').style.display=char.h?'inline-block':'none';
+  const illusEl=document.getElementById('char-illus');
+  if(githubImgs[char.id]){
+    illusEl.innerHTML='<img src="'+githubImgs[char.id]+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.innerHTML=illus[\''+char.id+'\']||char.zh">';
+  } else {
+    illusEl.innerHTML=illus[char.id]||char.zh;
+  }
+  // 文档编号
+  const docNo='NO. SMTI-'+Date.now().toString(36).toUpperCase().slice(-6);
+  document.getElementById('result-doc-no').textContent=docNo;
+  // 图章
+  const stampEl=document.getElementById('stamp-el');
+  const stampType=document.getElementById('stamp-type');
+  if(char.h){
+    stampEl.className='stamp stamp-hidden';
+    stampType.textContent='隐藏型';
+  } else if(char.cc==='camp-s'){
+    stampEl.className='stamp';
+    stampType.textContent='S型';
+  } else {
+    stampEl.className='stamp';
+    stampType.textContent='M型';
+    document.getElementById('stamp-el').style.borderColor='var(--stamp-blue)';
+    document.getElementById('stamp-el').style.color='var(--stamp-blue)';
+  }
   const ce=document.getElementById('result-camp');
   ce.textContent=char.camp;ce.className='result-camp-tag '+char.cc;
   document.getElementById('result-name').textContent=char.name;

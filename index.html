@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMTI · 你在感情里是哪种生物</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script defer src="/_vercel/insights/script.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap');
  
@@ -496,7 +495,58 @@ body{
   cursor:pointer;transition:all .15s;
 }
 .btn-share:hover{border-color:var(--text);color:var(--text);}
- 
+
+/* 公众号引导卡片 */
+.wx-card{
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 24px;margin-bottom:12px;
+  text-align:center;
+  box-shadow:var(--shadow),4px 4px 0 rgba(0,0,0,0.05);
+  position:relative;
+  overflow:hidden;
+}
+.wx-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:linear-gradient(90deg,var(--border),var(--border2),var(--border));
+}
+.wx-card-label{
+  font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:.2em;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:14px;
+}
+.wx-card-title{
+  font-family:'Noto Serif SC',serif;font-size:15px;
+  font-weight:600;color:var(--text);line-height:1.8;
+  margin-bottom:4px;
+}
+.wx-card-sub{
+  font-size:12.5px;color:var(--text-muted);line-height:1.8;
+  margin-bottom:18px;
+}
+.wx-qr{
+  width:120px;height:120px;
+  margin:0 auto 16px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:6px;background:#fff;
+}
+.wx-qr img{width:100%;height:100%;object-fit:contain;}
+.wx-card-hint{
+  font-size:11px;color:var(--text-dim);
+  letter-spacing:.05em;line-height:1.6;
+}
+.wx-card-arrow{
+  display:inline-block;
+  animation:wx-bounce 1.5s ease-in-out infinite;
+  margin-right:4px;
+}
+@keyframes wx-bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
 .btn-retry{
   width:100%;padding:14px;
   background:transparent;
@@ -645,13 +695,24 @@ body{
     </div>
  
     <div class="share-card">
-      <div class="section-title">分享给朋友</div>
-      <div class="share-text">我的 SMTI 诊断结果是 <em id="share-name"></em><br>你在感情里是折磨人的还是被折磨的？</div>
+      <div class="section-title">发给那个人测测</div>
+      <div class="share-text">我的 SMTI 诊断结果是 <em id="share-name"></em><br>你在感情里是折磨人的还是被折磨的？<br><span style="font-size:12px;color:var(--text-dim)">（发到群里会更好玩）</span></div>
       <div class="share-btns">
         <button class="btn-share" onclick="copyResult()">复制结果</button>
         <button class="btn-share" onclick="copyLink()">复制链接</button>
       </div>
     </div>
+
+    <div class="wx-card">
+      <div class="wx-card-label">FIELD NOTE</div>
+      <div class="wx-card-title">你的测试结果不是终点</div>
+      <div class="wx-card-sub">后续会有每种类型的深度解读<br>以及更多奇怪的测试</div>
+      <div class="wx-qr">
+        <img src="https://raw.githubusercontent.com/ShellyTse/SMTI/main/qrcode.png" alt="公众号二维码">
+      </div>
+      <div class="wx-card-hint"><span class="wx-card-arrow">☝</span>长按识别 · 关注「宇宙大爆炸刚好用来取暖」</div>
+    </div>
+
     <button class="btn-retry" onclick="resetQuiz()">重新测一次</button>
   </div>
 </div>
@@ -897,7 +958,7 @@ function renderResult(char,sc){
 function copyResult(){
   const n=document.getElementById('result-name').textContent;
   const z=document.getElementById('result-name-zh').textContent;
-  navigator.clipboard.writeText(`我的 SMTI 测试结果是 ${n}（${z}）\n你在感情里是哪种生物？来测测看 →`).then(()=>toast('已复制 ✓'));
+  navigator.clipboard.writeText(`我测了SMTI，我在感情里居然是「${n}（${z}）」\n你是S还是M？测完发群里对一下 → smtitest.top`).then(()=>toast('已复制 ✓'));
 }
 function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>toast('链接已复制 ✓'));}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}

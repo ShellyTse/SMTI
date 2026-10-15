@@ -1,5 +1,20 @@
 # SMTI Growth Lab — Tracking V1 (待验收)
 
+## 0. 环境隔离：Preview 默认为关闭（2026-10-15）
+
+**代码已在本 PR 中隔离 GA4；正式站点的 main 未修改。** `index.html` 现使用主机名白名单：
+
+- 生产：`www.smtitest.top`、`smtitest.top`、`smti-production.up.railway.app` → 保持原有 GA4 Measurement ID `G-GRM45XJCSH`。
+- 其余主机名（Railway PR 域名、`localhost` 等） → 默认不加载 GA4 SDK、`smtiTrack()` 不上报事件，避免污染生产数据。
+- **必须另外创建 GA4 测试 Property + Web 数据流**，获得新的 `G-...` Measurement ID。之后仅在功能分支中把 `previewMeasurementId = ''` 设置为测试 Property 的新 ID，重新检查 Preview 数据确实不进入生产 Property。**不要**填入原来的生产 ID。
+- 本次只依赖 hostname 区分环境：如果预览域名未来变化，默认仍保持关闭；如果将真实生产域名用于预览，需先调整白名单，否则可能写入正式 Property。Railway PR 环境不能绑定生产的自定义域名。
+- GA4 默认可将不同浏览器/设备识别为不同假名用户；预览测试也会有测试者的匿名数据，只应进入测试 Property。
+
+**模拟验证：** 生产3个白名单主机只注入生产 GA4 脚本；模拟 `pr-1.up.railway.app`、`localhost`、`preview.smtitest.top` 等域名不注入 GA4 脚本（PASS）。仅为 JavaScript 执行模拟，尚未完成真实预览服务/GA4 实收事件验证。
+
+**Railway 下一步（用户操作）：** Project Settings → Environments → Enable PR Environments；检查现有 Draft PR #1 是否生成独立 Preview。生产仍只关联 `main`；启用后可能产生额外费用。预览出现后检查网址、环境变量、是否与生产共享外部资源，确认再测试。
+
+
 **状态：** 仅功能分支，未合并 main、未部署至生产。  
 **分支：** `feature/smti-tracking-v1-20261015`  
 **代码位置：** `index.html`（纯前端 HTML/CSS/JS）。  

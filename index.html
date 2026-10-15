@@ -812,8 +812,38 @@ const qs=[
 ];
  
 let ans=new Array(qs.length).fill(null);
+
+// Growth tracking V1: only send interaction events; never send answers or personality results.
+const SMTI_TRACKING_VERSION = 'tracking_v1';
+const smtiMilestones = [1,4,7,11,14];
+let smtiSeenMilestones = new Set();
+let smtiSubmitted = false;
+let smtiResultSeen = false;
+function smtiTrack(name,params={}){
+  if(typeof gtag !== 'function') return;
+  gtag('event',name,{test_version:SMTI_TRACKING_VERSION,...params});
+}
+function smtiShareUrl(method){
+  const url=new URL(window.location.origin + window.location.pathname);
+  url.searchParams.set('utm_source','smti_share');
+  url.searchParams.set('utm_medium','peer');
+  url.searchParams.set('utm_campaign','smti_result');
+  url.searchParams.set('utm_content',method);
+  return url.toString();
+}
+function smtiTrackShareLanding(){
+  const query=new URLSearchParams(window.location.search);
+  if(query.get('utm_source')!=='smti_share'||query.get('utm_medium')!=='peer')return;
+  const value=query.get('utm_content');
+  smtiTrack('share_landing',{share_method:['result_text','direct_link'].includes(value)?value:'unknown'});
+}
+smtiTrackShareLanding();
  
-function startQuiz(){showScreen('quiz');buildQuiz();}
+function startQuiz(){
+  smtiSeenMilestones=new Set();smtiSubmitted=false;smtiResultSeen=false;
+  smtiTrack('test_start');
+  showScreen('quiz');buildQuiz();
+}
  
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -838,13 +868,21 @@ function buildQuiz(){
 }
  
 function pick(qi,i){
+  const firstAnswer=ans[qi]===null;
   ans[qi]=i;
   const block=document.getElementById('qb'+qi);
   block.querySelectorAll('.option').forEach((el,idx)=>el.classList.toggle('selected',idx===i));
   block.classList.remove('unanswered');
   updateUI();
+  if(firstAnswer){
+    const answered=ans.filter(a=>a!==null).length;
+    if(smtiMilestones.includes(answered)&&!smtiSeenMilestones.has(answered)){
+      smtiSeenMilestones.add(answered);
+      smtiTrack('answer_progress',{answered_count:answered,question_count:qs.length});
+    }
+  }
 }
- 
+
 function updateUI(){
   const done=ans.filter(a=>a!==null).length;
   const rem=qs.length-done;
@@ -866,9 +904,13 @@ function trySubmit(){
     document.getElementById('submit-hint').textContent=`还有 ${missing.length} 题未完成，已为你标出 ↑`;
     return;
   }
+  if(!smtiSubmitted){
+    smtiSubmitted=true;
+    smtiTrack('test_complete',{question_count:qs.length});
+  }
   doResult();
 }
- 
+
 function calcScores(){
   let r={C:0,A:0,T:0,E:0,W:0,D:0};
   ans.forEach((a,qi)=>{
@@ -918,6 +960,10 @@ function doResult(){
     },{c:null,d:Infinity}).c;
     renderResult(char,sc);
     showScreen('result');
+    if(!smtiResultSeen){
+      smtiResultSeen=true;
+      smtiTrack('result_view');
+    }
   },2200);
 }
  
@@ -966,13 +1012,27 @@ function renderResult(char,sc){
 }
  
 function copyResult(){
+  const method='result_text';
+  smtiTrack('share_click',{share_method:method});
   const n=document.getElementById('result-name').textContent;
   const z=document.getElementById('result-name-zh').textContent;
-  navigator.clipboard.writeText(`我测了SMTI，我在感情里居然是「${n}（${z}）」\n你是S还是M？测完发群里对一下 → smtitest.top`).then(()=>toast('已复制 ✓'));
+  const message=`我测了SMTI，我在感情里居然是「${n}（${z}）」\n你是S还是M？测完发群里对一下 → ${smtiShareUrl(method)}`;
+  navigator.clipboard.writeText(message)
+    .then(()=>{smtiTrack('share_copy_success',{share_method:method});toast('已复制 ✓');})
+    .catch(()=>toast('复制失败，请检查浏览器权限'));
 }
-function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>toast('链接已复制 ✓'));}
+function copyLink(){
+  const method='direct_link';
+  smtiTrack('share_click',{share_method:method});
+  navigator.clipboard.writeText(smtiShareUrl(method))
+    .then(()=>{smtiTrack('share_copy_success',{share_method:method});toast('链接已复制 ✓');})
+    .catch(()=>toast('复制失败，请检查浏览器权限'));
+}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
-function resetQuiz(){ans=new Array(qs.length).fill(null);showScreen('intro');}
+function resetQuiz(){
+  smtiTrack('retest_click');
+  ans=new Array(qs.length).fill(null);showScreen('intro');
+}
 </script>
 </body>
 </html>

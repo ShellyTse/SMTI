@@ -1,24 +1,26 @@
 # SMTI Growth Lab — Tracking V1 (待验收)
 
-## 0. 环境隔离：Preview 默认为关闭（2026-10-15）
+## 0. 环境隔离与验收（2026-10-15 更新）
 
-**代码已在本 PR 中隔离 GA4；正式站点的 main 未修改。** `index.html` 现使用主机名白名单：
+代码使用明确主机名白名单，不再把一切非生产域名默认为预览环境：
 
-- 生产：`www.smtitest.top`、`smtitest.top`、`smti-production.up.railway.app` → 保持原有 GA4 Measurement ID `G-GRM45XJCSH`。
-- 其余主机名（Railway PR 域名、`localhost` 等） → 默认不加载 GA4 SDK、`smtiTrack()` 不上报事件，避免污染生产数据。
-- **必须另外创建 GA4 测试 Property + Web 数据流**，获得新的 `G-...` Measurement ID。之后仅在功能分支中把 `previewMeasurementId = ''` 设置为测试 Property 的新 ID，重新检查 Preview 数据确实不进入生产 Property。**不要**填入原来的生产 ID。
-- 本次只依赖 hostname 区分环境：如果预览域名未来变化，默认仍保持关闭；如果将真实生产域名用于预览，需先调整白名单，否则可能写入正式 Property。Railway PR 环境不能绑定生产的自定义域名。
-- GA4 默认可将不同浏览器/设备识别为不同假名用户；预览测试也会有测试者的匿名数据，只应进入测试 Property。
+- `www.smtitest.top`、`smtitest.top`、`smti-production.up.railway.app` → 生产 Property，Measurement ID `G-GRM45XJCSH`。
+- `smti-smti-pr-1.up.railway.app` → 独立 Staging Property，Measurement ID `G-Q5WKDCB2YN`，开启 debug_mode。
+- 其他未知主机、`localhost` → 不加载 GA4，不发送事件。以后需要新的预览地址时，应显式加入测试白名单；切勿加入正式域名。
 
-**模拟验证：** 生产3个白名单主机只注入生产 GA4 脚本；模拟 `pr-1.up.railway.app`、`localhost`、`preview.smtitest.top` 等域名不注入 GA4 脚本（PASS）。仅为 JavaScript 执行模拟，尚未完成真实预览服务/GA4 实收事件验证。
+**验收结果：**
+- JavaScript 语法解析与7种域名分发模拟：PASS，未知域名 fail closed。
+- Railway PR Environment `SMTI-pr-1` 实际已部署并在线；浏览器控制台显示 `environment: preview` 和正确测试 Measurement ID。
+- GA4 Staging DebugView 已实际收到 `test_start`、`answer_progress`、`test_complete`、`result_view`、`share_click`、`share_copy_success`、`retest_click`、`share_landing`。
+- `answered_count` 观测到 1/4/7/11/14；`share_landing` 的 `share_method` 为 `direct_link`。
+- 已在 GA4 Staging 创建事件范围自定义维度 `answered_count`、`share_method`、`test_version`。
+- 浏览器 Network 中正式与测试 GA4 endpoint 的请求对照尚未独立核验；生产发布后应检查新代码已加载、页面功能和正式 Property 数据。
 
-**Railway 下一步（用户操作）：** Project Settings → Environments → Enable PR Environments；检查现有 Draft PR #1 是否生成独立 Preview。生产仍只关联 `main`；启用后可能产生额外费用。预览出现后检查网址、环境变量、是否与生产共享外部资源，确认再测试。
+**发布边界：** 只合并此 PR 的埋点代码与文档；不更改评分、人格、题目或体验 UI。生产上线后首先观察5—7天，避免同时进行产品实验。
 
-
-**状态：** 仅功能分支，未合并 main、未部署至生产。  
+**状态：** 预览测试已完成核心事件验收，待生产上线后核验。  
 **分支：** `feature/smti-tracking-v1-20261015`  
-**代码位置：** `index.html`（纯前端 HTML/CSS/JS）。  
-**目标：** 先获得可靠的“进入 → 开始 → 答题 → 结果 → 分享”行为数据，再决定优化实验。**本次不改评分算法、题目与结果展示逻辑。**
+**代码位置：** `index.html`。
 
 ## 1. 为什么埋点
 

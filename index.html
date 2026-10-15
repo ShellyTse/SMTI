@@ -6,35 +6,40 @@
 <title>SMTI · 你在感情里是哪种生物</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script defer src="/_vercel/insights/script.js"></script>
-<!-- GA4: only official production hosts use the production property.
-     Non-production hosts are DISABLED until a different GA4 TEST PROPERTY ID is supplied. -->
+<!-- GA4 properties are isolated by an explicit hostname allowlist.
+     Unknown hosts never send any analytics data. -->
 <script>
 (function initSmtiAnalytics() {
+  const hostname = window.location.hostname.toLowerCase();
   const productionHosts = new Set([
     'www.smtitest.top',
     'smtitest.top',
     'smti-production.up.railway.app'
   ]);
-  const isProduction = productionHosts.has(window.location.hostname.toLowerCase());
+  const previewHosts = new Set([
+    'smti-smti-pr-1.up.railway.app'
+  ]);
   const productionMeasurementId = 'G-GRM45XJCSH';
-  // IMPORTANT: Only use an ID from a SEPARATE GA4 TEST PROPERTY here.
-  // Keep empty until its dedicated test property has been created.
+  // Dedicated GA4 STAGING property. Never reuse the production Measurement ID.
   const previewMeasurementId = 'G-Q5WKDCB2YN';
-  const measurementId = isProduction ? productionMeasurementId : previewMeasurementId;
+  const environment = productionHosts.has(hostname) ? 'production'
+    : previewHosts.has(hostname) ? 'preview' : 'disabled';
+  const measurementId = environment === 'production' ? productionMeasurementId
+    : environment === 'preview' ? previewMeasurementId : '';
 
   window.SMTI_ANALYTICS = {
-    environment: isProduction ? 'production' : 'preview',
+    environment,
     enabled: Boolean(measurementId),
     measurementId: measurementId || null
   };
 
-  // Fail closed: preview/localhost must not load the production GA4 tag.
+  // Fail closed: only known production / preview hosts are instrumented.
   if (!measurementId) return;
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() { window.dataLayer.push(arguments); };
   window.gtag('js', new Date());
-  window.gtag('config', measurementId, isProduction ? {} : { debug_mode: true });
+  window.gtag('config', measurementId, environment === 'production' ? {} : { debug_mode: true });
 
   const tag = document.createElement('script');
   tag.async = true;

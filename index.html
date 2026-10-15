@@ -6,13 +6,41 @@
 <title>SMTI · 你在感情里是哪种生物</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script defer src="/_vercel/insights/script.js"></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GRM45XJCSH"></script>
+<!-- GA4: only official production hosts use the production property.
+     Non-production hosts are DISABLED until a different GA4 TEST PROPERTY ID is supplied. -->
 <script>
+(function initSmtiAnalytics() {
+  const productionHosts = new Set([
+    'www.smtitest.top',
+    'smtitest.top',
+    'smti-production.up.railway.app'
+  ]);
+  const isProduction = productionHosts.has(window.location.hostname.toLowerCase());
+  const productionMeasurementId = 'G-GRM45XJCSH';
+  // IMPORTANT: Only use an ID from a SEPARATE GA4 TEST PROPERTY here.
+  // Keep empty until its dedicated test property has been created.
+  const previewMeasurementId = '';
+  const measurementId = isProduction ? productionMeasurementId : previewMeasurementId;
+
+  window.SMTI_ANALYTICS = {
+    environment: isProduction ? 'production' : 'preview',
+    enabled: Boolean(measurementId),
+    measurementId: measurementId || null
+  };
+
+  // Fail closed: preview/localhost must not load the production GA4 tag.
+  if (!measurementId) return;
+
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GRM45XJCSH');
+  window.gtag = function() { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', measurementId, isProduction ? {} : { debug_mode: true });
+
+  const tag = document.createElement('script');
+  tag.async = true;
+  tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
+  document.head.appendChild(tag);
+})();
 </script>
  
 <style>
@@ -820,8 +848,9 @@ let smtiSeenMilestones = new Set();
 let smtiSubmitted = false;
 let smtiResultSeen = false;
 function smtiTrack(name,params={}){
-  if(typeof gtag !== 'function') return;
-  gtag('event',name,{test_version:SMTI_TRACKING_VERSION,...params});
+  // No events at all when preview analytics has not been explicitly enabled.
+  if(!window.SMTI_ANALYTICS?.enabled || typeof window.gtag !== 'function') return;
+  window.gtag('event',name,{test_version:SMTI_TRACKING_VERSION,...params});
 }
 function smtiShareUrl(method){
   const url=new URL(window.location.origin + window.location.pathname);
